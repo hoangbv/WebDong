@@ -24,6 +24,8 @@ export interface ContactInfoState {
   telegramChannelUser: string;
   whatsapp: string;
   whatsappNumber: string;
+  phone?: string;
+  address?: string;
   instagram: string;
   email: string;
   website: string;
@@ -60,7 +62,7 @@ const DEFAULT_CONTENT_STATE: AppContentState = {
   otherPricing: [...OTHER_PRICING],
 };
 
-const STORAGE_KEY = 'fuji_app_content_v4';
+const STORAGE_KEY = 'fuji_app_content_v5';
 const ADMIN_PASS_KEY = 'fuji_admin_passcode';
 
 interface ContentContextValue {
