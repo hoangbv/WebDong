@@ -316,6 +316,5 @@ export const FAQ_DATA: FAQItem[] = [
 export const ACCEPTED_PAYMENTS = [
   { name: 'USDT (TRC20 / ERC20)', type: 'Crypto', note: 'Instant confirmation' },
   { name: 'Bitcoin / Ethereum', type: 'Crypto', note: 'Global & private' },
-  { name: 'International Bank Wire', type: 'Banking', note: 'USD / EUR / VND' },
   { name: 'PayPal / Wise / Payoneer', type: 'Fintech', note: 'Flexible billing' },
 ];
