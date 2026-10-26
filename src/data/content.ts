@@ -1,12 +1,12 @@
 import { ComparisonPoint, FAQItem, PricingTier } from '../types';
 
 export const CONTACT_INFO = {
-  telegramDirect: 'https://t.me/G2_agency007',
-  telegramUser: '@G2_agency007',
-  telegramSupport: 'https://t.me/g2_agency',
-  telegramSupportUser: '@g2_agency',
-  telegramChannel: 'https://t.me/teamg2agency',
-  telegramChannelUser: '@teamg2agency',
+  telegramDirect: 'https://t.me/fuji_agency',
+  telegramUser: '@fuji_agency',
+  telegramSupport: 'https://t.me/fuji_agency',
+  telegramSupportUser: '@fuji_agency',
+  telegramChannel: 'https://t.me/fuji_agency',
+  telegramChannelUser: '@fuji_agency',
   whatsapp: 'http://Wa.me/0399064192',
   whatsappNumber: '+84 399 064 192',
   instagram: 'https://instagram.com',
