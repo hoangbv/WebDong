@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShieldCheck, Zap, ArrowRight, Send, MessageCircle, Clock, Check, Sparkles, TrendingUp } from 'lucide-react';
-import { CONTACT_INFO } from '../data/content';
+import { ShieldCheck, Zap, ArrowRight, MessageCircle, Clock, Check, Sparkles, TrendingUp } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 interface HeroProps {
   onOpenOrder: () => void;
@@ -8,6 +8,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
+  const { content } = useContent();
+  const { brandName, contactInfo } = content;
   return (
     <section id="overview" className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden transition-colors duration-300">
       {/* Background radial glows */}
@@ -27,7 +29,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
               <span>Facebook Agency BM & Resilient Fanpage Services</span>
             </div>
 
-            {/* Main Headline from G2 Agency */}
+            {/* Main Headline from Fuji Agency */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] transition-colors">
               Rental Facebook{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff7a00] via-[#ff9500] to-amber-500 dark:to-amber-300">
@@ -40,11 +42,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0 transition-colors">
               {lang === 'en' ? (
                 <>
-                  <strong className="text-slate-900 dark:text-white">G2 Agency</strong> specializes in providing a premium advertising format on Facebook. We operate 24/7 and provide <strong className="text-[#ff7a00] dark:text-amber-400">FACEBOOK AGENT</strong> accounts with big budgets. Full support for Black Hat, White Hat, Grey Hat, Crypto, NFT, and Gambling.
+                  <strong className="text-slate-900 dark:text-white">{brandName}</strong> specializes in providing a premium advertising format on Facebook. We operate 24/7 and provide <strong className="text-[#ff7a00] dark:text-amber-400">FACEBOOK AGENT</strong> accounts with big budgets. Full support for Black Hat, White Hat, Grey Hat, Crypto, NFT, and Gambling.
                 </>
               ) : (
                 <>
-                  <strong className="text-slate-900 dark:text-white">G2 Agency</strong> chuyên cung cấp tài khoản quảng cáo Agency cao cấp trên Facebook. Hoạt động 24/7, cung cấp tài khoản Agency ngân sách lớn không giới hạn chi tiêu. Hỗ trợ đầy đủ Black Hat, White Hat, Grey Hat, Crypto, NFT, Gambling.
+                  <strong className="text-slate-900 dark:text-white">{brandName}</strong> chuyên cung cấp tài khoản quảng cáo Agency cao cấp trên Facebook. Hoạt động 24/7, cung cấp tài khoản Agency ngân sách lớn không giới hạn chi tiêu. Hỗ trợ đầy đủ Black Hat, White Hat, Grey Hat, Crypto, NFT, Gambling.
                 </>
               )}
             </p>
@@ -81,23 +83,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
               >
                 {lang === 'en' ? 'Discover More' : 'Tìm Hiểu Thêm'}
               </a>
-
-              <a
-                href={CONTACT_INFO.telegramDirect}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] border border-[#229ED9]/30 font-bold text-sm transition-all flex items-center justify-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                <span>Telegram @G2_agency007</span>
-              </a>
             </div>
 
-            {/* 9+ years footer quote from original content */}
+            {/* 6+ years footer quote from original content */}
             <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-center lg:justify-start gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff7a00]"></span>
               <span>
-                <strong>9+ years</strong> in marketing and advertising with proven solutions for ad account crashes.
+                <strong>6+ years</strong> in marketing and advertising with proven solutions for ad account crashes.
               </span>
             </div>
           </div>
@@ -113,12 +105,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
                   </div>
                   <div>
                     <div className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <span>G2 Agency Meta BM VIP</span>
+                      <span>Fuji Agency Meta BM VIP</span>
                       <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">
                         ACTIVE
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">ID: G2-BM-884920491 • Whitelisted</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">ID: FUJI-BM-884920491 • Whitelisted</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -191,12 +183,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
         {/* 4 Key Metric Badges Strip */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-slate-200 dark:border-slate-800/80">
           <div className="bg-white dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80 text-center shadow-sm">
-            <span className="text-2xl sm:text-3xl font-black text-[#ff7a00] block">9+ Years</span>
+            <span className="text-2xl sm:text-3xl font-black text-[#ff7a00] block">6+ Years</span>
             <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Marketing & Advertising</span>
           </div>
 
           <div className="bg-white dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80 text-center shadow-sm">
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white block">24/7/365</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white block">24/7</span>
             <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">VIP Closed Group Support</span>
           </div>
 

@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { DollarSign, Check, Calculator, ArrowRight, Gift, Flame } from 'lucide-react';
-import { FB_PRICING_TIERS, OTHER_PRICING, THRESHOLD_PROGRAM, FANPAGE_SOLUTIONS } from '../data/content';
+import { useContent } from '../context/ContentContext';
 
 interface PricingCalculatorProps {
   onOpenOrder: (budget?: string) => void;
   lang: 'en' | 'vi';
 }
 
-export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrder, lang }) => {
+export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrder }) => {
+  const { content } = useContent();
+  const pricingTiers = content.pricingTiers;
+  const thresholdProgram = content.thresholdProgram;
+  const fanpageSolutions = content.fanpageSolutions;
+  const otherPricing = content.otherPricing;
+  const servicesTitle = content.servicesTitle || 'My Services Include';
+  const servicesSubtitle =
+    content.servicesSubtitle ||
+    'We offer competitive pricing for our Facebook advertising services, tailored to your needs. Zero hidden charges, 0% VAT tax, and instant balance refunds.';
+
   const [activeTab, setActiveTab] = useState<'facebook' | 'fanpages' | 'accounts'>('facebook');
   const [dailyBudget, setDailyBudget] = useState<number>(3500);
 
@@ -34,10 +44,10 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
             <span>Transparent Agency Rates</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight transition-colors">
-            My Services Include
+            {servicesTitle}
           </h2>
           <p className="mt-3 text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed transition-colors">
-            We offer competitive pricing for our Facebook advertising services, tailored to your needs. Zero hidden charges, 0% VAT tax, and instant balance refunds.
+            {servicesSubtitle}
           </p>
 
           {/* Pricing Tabs */}
@@ -80,7 +90,7 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
           <div className="space-y-12">
             {/* 3 Facebook Tiers */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {FB_PRICING_TIERS.map((tier) => (
+              {pricingTiers.map((tier) => (
                 <div
                   key={tier.id}
                   className={`relative rounded-2xl p-7 flex flex-col justify-between transition-all duration-300 ${
@@ -151,20 +161,22 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
                     <span>Special Threshold Program</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                    {THRESHOLD_PROGRAM.title}
+                    {thresholdProgram.title}
                   </h3>
                   <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {THRESHOLD_PROGRAM.content}
+                    {thresholdProgram.content}
                   </p>
                   <div className="flex items-center gap-2 pt-1 text-xs text-amber-700 dark:text-amber-300 font-semibold">
                     <Gift className="w-4 h-4" />
-                    <span>{THRESHOLD_PROGRAM.referralNote}</span>
+                    <span>{thresholdProgram.referralNote}</span>
                   </div>
                 </div>
 
                 <div className="flex-shrink-0 text-center lg:text-right bg-white dark:bg-slate-950/70 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                   <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold block">Effective Rate</span>
-                  <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 block my-1">4% Charge</span>
+                  <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 block my-1">
+                    {thresholdProgram.feeRate || '4% Charge'}
+                  </span>
                   <span className="text-[11px] text-amber-700 dark:text-amber-300 font-semibold block mb-4">+ $450 Profit Bonus / $900 Threshold</span>
                   <button
                     onClick={() => onOpenOrder('Facebook Threshold Program 4%')}
@@ -180,7 +192,7 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
 
         {activeTab === 'fanpages' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {FANPAGE_SOLUTIONS.map((item, idx) => (
+            {fanpageSolutions.map((item, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl bg-white dark:bg-slate-900/80 p-8 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none flex flex-col justify-between transition-colors"
@@ -217,7 +229,7 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
 
         {activeTab === 'accounts' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {OTHER_PRICING.map((item, idx) => (
+            {otherPricing.map((item, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl bg-white dark:bg-slate-900/80 p-8 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none flex flex-col justify-between transition-colors"
@@ -262,7 +274,7 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({ onOpenOrde
                 Simulate Your Facebook Ad Spend & Savings
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 transition-colors">
-                Slide to estimate your daily Facebook ad spend and preview your agency service fee and tax savings with G2 Agency:
+                Slide to estimate your daily Facebook ad spend and preview your agency service fee and tax savings with Fuji Agency:
               </p>
 
               {/* Slider */}

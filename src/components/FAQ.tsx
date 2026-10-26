@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, ChevronUp, MessageCircle, Send } from 'lucide-react';
-import { FAQ_DATA, CONTACT_INFO } from '../data/content';
+import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 interface FAQProps {
   lang: 'en' | 'vi';
 }
 
 export const FAQ: React.FC<FAQProps> = ({ lang }) => {
+  const { content } = useContent();
+  const { faqItems } = content;
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   const toggle = (idx: number) => {
@@ -32,7 +34,7 @@ export const FAQ: React.FC<FAQProps> = ({ lang }) => {
 
         {/* Accordion list */}
         <div className="space-y-4">
-          {FAQ_DATA.map((item, idx) => {
+          {faqItems.map((item, idx) => {
             const isOpen = openIdx === idx;
             return (
               <div
@@ -60,36 +62,6 @@ export const FAQ: React.FC<FAQProps> = ({ lang }) => {
               </div>
             );
           })}
-        </div>
-
-        {/* Quick reach out box */}
-        <div className="mt-12 p-6 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-[#111b3e] dark:to-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-md dark:shadow-xl transition-colors">
-          <div>
-            <h4 className="font-extrabold text-slate-900 dark:text-white text-base">Have a specialized requirement?</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Talk directly with our senior ad ops team on Telegram or WhatsApp 24/7.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <a
-              href={CONTACT_INFO.telegramDirect}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2.5 bg-[#229ED9] hover:bg-[#229ED9]/80 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>Telegram</span>
-            </a>
-            <a
-              href={CONTACT_INFO.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
-            </a>
-          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, MessageCircle, Menu, X, ArrowUpRight, Sun, Moon, Globe, ChevronDown, Check, Sparkles } from 'lucide-react';
-import { CONTACT_INFO } from '../data/content';
+import { MessageCircle, Menu, X, ArrowUpRight, Sun, Moon, Globe, ChevronDown, Check, Sparkles } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 import { Theme, Language } from '../types';
 import { SUPPORTED_LANGUAGES, changeLanguageWithGoogleTranslate, getCurrentLanguageCode, LanguageOption } from '../utils/googleTranslate';
 
@@ -19,6 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   theme,
   setTheme,
 }) => {
+  const { content } = useContent();
+  const { contactInfo, announcement, brandName, brandShort } = content;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
@@ -51,13 +53,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { href: '#overview', label: 'Overview' },
+    { href: '#pricing', label: 'Services & Pricing' },
     { href: '#comparison', label: 'Agency vs Regular' },
     { href: '#process', label: 'Process' },
-    { href: '#pricing', label: 'Services & Pricing' },
     { href: '#fanpages', label: 'Fanpages & BM' },
     { href: '#policy', label: 'Policy' },
     { href: '#faq', label: 'FAQ' },
-    { href: '#contact', label: 'Contact' },
   ];
 
   const toggleTheme = () => {
@@ -89,28 +90,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="font-medium">
-              24/7 Facebook Agency Operations Active • Account & Fanpage Handover in 10 Minutes • 0% VAT
+              {announcement}
             </span>
           </div>
           <div className="flex items-center gap-4">
             <a
-              href={CONTACT_INFO.telegramChannel}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#ff7a00] flex items-center gap-1 transition-colors"
-            >
-              <Send className="w-3 h-3 text-[#ff7a00]" />
-              <span>Channel: {CONTACT_INFO.telegramChannelUser}</span>
-            </a>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
-            <a
-              href={CONTACT_INFO.whatsapp}
+              href={contactInfo.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-emerald-500 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors font-medium"
             >
               <MessageCircle className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
-              <span>WhatsApp: {CONTACT_INFO.whatsappNumber}</span>
+              <span>WhatsApp: {contactInfo.whatsappNumber}</span>
             </a>
           </div>
         </div>
@@ -120,12 +111,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo */}
         <a href="#overview" className="flex items-center gap-3 group notranslate">
           <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff7a00] to-[#e65c00] flex items-center justify-center shadow-lg shadow-[#ff7a00]/30 group-hover:scale-105 transition-transform flex-shrink-0">
-            <span className="font-extrabold text-white text-lg tracking-tighter">G2</span>
+            <span className="font-extrabold text-white text-base sm:text-lg tracking-tighter">{brandShort}</span>
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white dark:border-[#0B0F19]" />
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-1 transition-colors">
-              G2 <span className="text-[#ff7a00]">AGENCY</span>
+            <span className="font-black text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-1 transition-colors uppercase">
+              {brandName}
             </span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
               Facebook Ads & Fanpages
@@ -262,17 +253,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Telegram Quick Contact */}
-          <a
-            href={CONTACT_INFO.telegramDirect}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] border border-[#229ED9]/30 px-3.5 py-2 rounded-xl text-xs font-bold transition-all hover:scale-105 notranslate"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Telegram</span>
-          </a>
-
           {/* Rent Account Button */}
           <button
             onClick={() => onOpenOrder()}
@@ -370,26 +350,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Rent Account Now
             </button>
-            <div className="flex gap-2">
-              <a
-                href={CONTACT_INFO.telegramDirect}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2.5 bg-[#229ED9]/15 text-[#229ED9] border border-[#229ED9]/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
-              >
-                <Send className="w-3.5 h-3.5" />
-                Telegram
-              </a>
-              <a
-                href={CONTACT_INFO.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                WhatsApp
-              </a>
-            </div>
+            <a
+              href={contactInfo.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              WhatsApp Support ({contactInfo.whatsappNumber})
+            </a>
           </div>
         </div>
       )}

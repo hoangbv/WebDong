@@ -91,7 +91,7 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
  */
 export function changeLanguageWithGoogleTranslate(targetCode: string): void {
   try {
-    localStorage.setItem('g2_language', targetCode);
+    localStorage.setItem('fuji_language', targetCode);
 
     // Cookie configuration for Google Translate
     const domain = window.location.hostname;
@@ -127,7 +127,7 @@ export function changeLanguageWithGoogleTranslate(targetCode: string): void {
  */
 export function getCurrentLanguageCode(): string {
   try {
-    const saved = localStorage.getItem('g2_language');
+    const saved = localStorage.getItem('fuji_language');
     if (saved) return saved;
 
     // Check googtrans cookie

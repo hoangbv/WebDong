@@ -11,6 +11,26 @@ export interface PricingTier {
   features: string[];
 }
 
+export interface ThresholdProgram {
+  title: string;
+  feeRate: string;
+  content: string;
+  referralNote: string;
+}
+
+export interface FanpageSolution {
+  title: string;
+  rate: string;
+  desc: string;
+  features: string[];
+}
+
+export interface OtherPricingItem {
+  title: string;
+  rate: string;
+  desc: string;
+}
+
 export interface ComparisonPoint {
   title: string;
   regular: string;

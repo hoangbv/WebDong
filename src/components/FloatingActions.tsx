@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Send, MessageCircle, ArrowUp } from 'lucide-react';
-import { CONTACT_INFO } from '../data/content';
+import { Send, ArrowUp } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 export const FloatingActions: React.FC = () => {
+  const { content } = useContent();
+  const { contactInfo } = content;
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -18,7 +20,7 @@ export const FloatingActions: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto">
+    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto notranslate">
       {/* Scroll to Top */}
       {showScrollTop && (
         <button
@@ -30,23 +32,9 @@ export const FloatingActions: React.FC = () => {
         </button>
       )}
 
-      {/* WhatsApp Quick Floating Button */}
-      <a
-        href={CONTACT_INFO.whatsapp}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
-        className="group relative flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-xl shadow-emerald-500/30 transition-all hover:scale-110"
-      >
-        <MessageCircle className="w-6 h-6" />
-        <span className="absolute right-14 bg-slate-900 border border-slate-700 text-white text-xs font-semibold px-2.5 py-1 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
-          Chat WhatsApp
-        </span>
-      </a>
-
       {/* Telegram Quick Floating Button with Pulse Effect */}
       <a
-        href={CONTACT_INFO.telegramDirect}
+        href={contactInfo.telegramDirect}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on Telegram"
@@ -58,8 +46,8 @@ export const FloatingActions: React.FC = () => {
           <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#ff7a00]"></span>
         </span>
         <Send className="w-7 h-7" />
-        <span className="absolute right-16 bg-slate-900 border border-slate-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
-          Telegram 24/7 @G2_agency007
+        <span className="absolute right-16 bg-slate-900 border border-slate-700 text-white text-xs font-semibold px-2.5 py-1 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
+          Chat Telegram {contactInfo.telegramUser}
         </span>
       </a>
     </div>

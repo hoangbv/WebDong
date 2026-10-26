@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, Send, ShieldCheck, Zap } from 'lucide-react';
-import { CONTACT_INFO } from '../data/content';
+import { X, CheckCircle2, MessageCircle, ShieldCheck, Zap } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -15,6 +15,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   preselectedService,
   lang,
 }) => {
+  const { content } = useContent();
+  const { contactInfo, brandName } = content;
   const [platform, setPlatform] = useState('Facebook BM');
   const [budget, setBudget] = useState(preselectedService || '$3,000 - $10,000 / day (5% Charge)');
   const [telegramOrWa, setTelegramOrWa] = useState('');
@@ -52,15 +54,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Your account request for <strong>{platform}</strong> ({budget}) is ready for immediate VPS handover.
             </p>
-            <div className="pt-3 space-y-2">
+            <div className="pt-3 space-y-2 notranslate">
               <a
-                href={`${CONTACT_INFO.telegramDirect}?text=Hello%20G2%20Agency,%20I%20want%20to%20rent%20${encodeURIComponent(platform)}%20(${encodeURIComponent(budget)})`}
+                href={`${contactInfo.whatsapp}?text=Hello%20${encodeURIComponent(brandName)},%20I%20want%20to%20rent%20${encodeURIComponent(platform)}%20(${encodeURIComponent(budget)})`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-3.5 bg-[#229ED9] hover:bg-[#229ED9]/90 text-white font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow"
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow"
               >
-                <Send className="w-4 h-4" />
-                <span>Open Telegram @G2_agency007 to Get Account</span>
+                <MessageCircle className="w-4 h-4" />
+                <span>Open WhatsApp ({contactInfo.whatsappNumber}) to Receive Account</span>
               </a>
               <button
                 onClick={onClose}

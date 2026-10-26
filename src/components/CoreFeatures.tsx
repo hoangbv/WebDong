@@ -23,15 +23,15 @@ export const CoreFeatures: React.FC<CoreFeaturesProps> = ({ lang }) => {
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] text-xs font-bold uppercase tracking-wider mb-3">
             <Award className="w-3.5 h-3.5" />
-            <span>Why Top Affiliates Trust G2 Agency</span>
+            <span>Why Top Affiliates Trust Fuji Agency</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight transition-colors">
             Built for High-Velocity Advertising
           </h2>
           <p className="mt-3 text-slate-600 dark:text-slate-400 text-sm sm:text-base transition-colors">
             {lang === 'en'
-              ? 'Stop dealing with random ad bans, spending caps, and lost funds. G2 Agency delivers proven enterprise accounts backed by contractual SLA.'
-              : 'Chấm dứt nỗi lo tài khoản bị khoá, giới hạn chi tiêu và kẹt vốn. G2 Agency cung cấp tài khoản Agency ổn định với cam kết SLA rõ ràng.'}
+              ? 'Stop dealing with random ad bans, spending caps, and lost funds. Fuji Agency delivers proven enterprise accounts backed by contractual SLA.'
+              : 'Chấm dứt nỗi lo tài khoản bị khoá, giới hạn chi tiêu và kẹt vốn. Fuji Agency cung cấp tài khoản Agency ổn định với cam kết SLA rõ ràng.'}
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export const CoreFeatures: React.FC<CoreFeaturesProps> = ({ lang }) => {
             <div className="pt-4 md:pt-0 md:pl-6 space-y-1">
               <span className="text-xs uppercase font-extrabold text-blue-400 tracking-wider block">All Trading Niches</span>
               <p className="text-sm text-slate-300">
-                9+ years in marketing and advertising with solutions for ad account crashes.
+                6+ years in marketing and advertising with solutions for ad account crashes.
               </p>
             </div>
           </div>

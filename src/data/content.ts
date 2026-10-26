@@ -10,7 +10,7 @@ export const CONTACT_INFO = {
   whatsapp: 'http://Wa.me/0399064192',
   whatsappNumber: '+84 399 064 192',
   instagram: 'https://instagram.com',
-  email: 'support@fuji-agency.com',
+  email: 'support@fujiagency.com',
   website: 'https://fujiagency.com',
 };
 
@@ -27,8 +27,8 @@ export const COMPARISON_DATA: ComparisonPoint[] = [
   },
   {
     title: 'Support & Assistance',
-    regular: 'No Direct Support from G2 Agency. You’re on your own when issues arise—no priority support, no fast resolutions.',
-    agency: 'Direct Support from G2 Agency. Get fast, hands-on assistance from experts who understand both technical and strategic challenges.',
+    regular: 'No Direct Support from Fuji Agency. You’re on your own when issues arise—no priority support, no fast resolutions.',
+    agency: 'Direct Support from Fuji Agency. Get fast, hands-on assistance from experts who understand both technical and strategic challenges.',
   },
   {
     title: 'Ad Review Process',
@@ -53,7 +53,7 @@ export const COMPARISON_DATA: ComparisonPoint[] = [
   {
     title: 'Refund & Balance Security',
     regular: 'No Balance Withdrawal. Unused ad balance cannot be withdrawn, locking up your cash flow.',
-    agency: 'Exclusive Refund & Cashback Policies. Recover costs and maximize ROI with G2 Agency–only benefits. 100% refund of unspent funds.',
+    agency: 'Exclusive Refund & Cashback Policies. Recover costs and maximize ROI with Fuji Agency–only benefits. 100% refund of unspent funds.',
   },
   {
     title: 'Fund Relocation if Restricted',
@@ -264,7 +264,7 @@ export const COOPERATION_STEPS = [
   {
     num: '2',
     title: 'Transfer Budget & Fee',
-    desc: 'Transfer spending budget + service fees via Crypto (USDT) or Bank Wire.',
+    desc: 'Transfer spending budget + service fees via Crypto (USDT), PayPal or Wise.',
   },
   {
     num: '3',
@@ -274,7 +274,7 @@ export const COOPERATION_STEPS = [
   {
     num: '4',
     title: '24/7 VIP Closed Group Support',
-    desc: 'Staff support you 24/7 in a private closed group on Telegram for instant campaign resolution.',
+    desc: 'Dedicated staff support you 24/7 in a private closed VIP group for instant campaign resolution.',
   },
 ];
 

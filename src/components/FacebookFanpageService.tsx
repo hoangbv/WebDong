@@ -25,8 +25,8 @@ export const FacebookFanpageService: React.FC<FacebookFanpageServiceProps> = ({
           </h2>
           <p className="mt-3 text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed transition-colors">
             {lang === 'en'
-              ? 'Scale your Facebook campaigns without fear of sudden page bans or checkpoint bottlenecks. G2 Agency provides aged, pre-warmed Fanpages, verified Business Managers, and pre-configured VPS environments.'
-              : 'Tăng tốc chiến dịch Facebook không lo checkpoint hay hạn chế Fanpage. G2 Agency cung cấp Fanpage kháng trâu, BM Agency Nolimit và môi trường VPS/AdsPower chuẩn sạch.'}
+              ? 'Scale your Facebook campaigns without fear of sudden page bans or checkpoint bottlenecks. Fuji Agency provides aged, pre-warmed Fanpages, verified Business Managers, and pre-configured VPS environments.'
+              : 'Tăng tốc chiến dịch Facebook không lo checkpoint hay hạn chế Fanpage. Fuji Agency cung cấp Fanpage kháng trâu, BM Agency Nolimit và môi trường VPS/AdsPower chuẩn sạch.'}
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export const FacebookFanpageService: React.FC<FacebookFanpageServiceProps> = ({
               All-In-One Facebook Assets Included
             </span>
             <p className="text-sm text-slate-700 dark:text-slate-200">
-              When you rent an agency account with G2, we provide aged Fanpages, verified pixels, and clean proxy environments in VPS/AdsPower at no extra cost.
+              When you rent an agency account with Fuji, we provide aged Fanpages, verified pixels, and clean proxy environments in VPS/AdsPower at no extra cost.
             </p>
           </div>
 

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { ContentProvider } from './context/ContentContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CoreFeatures } from './components/CoreFeatures';
@@ -14,13 +15,13 @@ import { FacebookFanpageService } from './components/FacebookFanpageService';
 import { CooperationPolicy } from './components/CooperationPolicy';
 import { PaymentMethods } from './components/PaymentMethods';
 import { FAQ } from './components/FAQ';
-import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
 import { OrderModal } from './components/OrderModal';
+import { AdminModal } from './components/AdminModal';
 import { Theme, Language } from './types';
 
-export default function App() {
+function MainApp() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | undefined>(undefined);
   const [lang, setLang] = useState<Language>('en');
@@ -28,7 +29,7 @@ export default function App() {
   // Initialize theme from localStorage or default to 'dark'
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('g2_theme') as Theme;
+      const saved = localStorage.getItem('fuji_theme') as Theme;
       if (saved === 'light' || saved === 'dark') return saved;
     }
     return 'dark';
@@ -43,7 +44,7 @@ export default function App() {
       root.classList.remove('dark');
     }
     try {
-      localStorage.setItem('g2_theme', theme);
+      localStorage.setItem('fuji_theme', theme);
     } catch {
       // ignore
     }
@@ -74,7 +75,10 @@ export default function App() {
         {/* Hero Section */}
         <Hero onOpenOrder={handleOpenOrder} lang={lang} />
 
-        {/* Core Promises & 9+ Years Ad Ops Background */}
+        {/* Services, Transparent Pricing Matrix & Live Calculator (My Services Include) */}
+        <PricingCalculator onOpenOrder={handleOpenOrder} lang={lang} />
+
+        {/* Core Promises & 6+ Years Ad Ops Background (Built for High-Velocity Advertising) */}
         <CoreFeatures lang={lang} />
 
         {/* Agency Accounts vs Regular Accounts In-Depth Comparison */}
@@ -83,23 +87,17 @@ export default function App() {
         {/* 3-Step Process & Scam Protection Notice */}
         <ProcessTimeline onOpenOrder={handleOpenOrder} lang={lang} />
 
-        {/* Services, Transparent Pricing Matrix & Live Calculator */}
-        <PricingCalculator onOpenOrder={handleOpenOrder} lang={lang} />
-
         {/* Facebook Fanpage, Pixels & Agency BM Infrastructure */}
         <FacebookFanpageService onOpenOrder={handleOpenOrder} lang={lang} />
 
         {/* Cooperation Policy & Account Level Setup */}
         <CooperationPolicy onOpenOrder={handleOpenOrder} lang={lang} />
 
-        {/* Accepted Payment Methods (Crypto, Wire, Fintech) */}
+        {/* Accepted Payment Methods */}
         <PaymentMethods />
 
         {/* Frequently Asked Questions */}
         <FAQ lang={lang} />
-
-        {/* Direct Telegram / WhatsApp Channels & Leave a Message Form */}
-        <ContactSection lang={lang} />
       </main>
 
       {/* Footer */}
@@ -115,6 +113,17 @@ export default function App() {
         preselectedService={selectedService}
         lang={lang}
       />
+
+      {/* Live Admin Content Management Modal */}
+      <AdminModal />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ContentProvider>
+      <MainApp />
+    </ContentProvider>
   );
 }

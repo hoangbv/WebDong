@@ -24,8 +24,8 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
           </h2>
           <p className="mt-4 text-slate-600 dark:text-slate-300 text-base leading-relaxed transition-colors">
             {lang === 'en'
-              ? 'Discover why serious media buyers refuse to run on standard personal accounts and migrate to G2 Agency infrastructure.'
-              : 'Khám phá sự khác biệt vượt trội giữa tài khoản quảng cáo thông thường và tài khoản Agency cao cấp tại G2 Agency.'}
+              ? 'Discover why serious media buyers refuse to run on standard personal accounts and migrate to Fuji Agency infrastructure.'
+              : 'Khám phá sự khác biệt vượt trội giữa tài khoản quảng cáo thông thường và tài khoản Agency cao cấp tại Fuji Agency.'}
           </p>
 
           {/* View Toggle */}
@@ -144,7 +144,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                   <li className="flex items-start gap-3">
                     <span className="w-5 h-5 rounded-full bg-rose-500/10 text-rose-500 dark:text-rose-400 flex items-center justify-center text-xs font-bold mt-0.5 flex-shrink-0">✕</span>
                     <div>
-                      <strong className="text-sm text-slate-900 dark:text-white block">No Direct Support from G2 Agency</strong>
+                      <strong className="text-sm text-slate-900 dark:text-white block">No Direct Support from Fuji Agency</strong>
                       <span className="text-xs text-slate-600 dark:text-slate-400">You’re on your own when issues arise—no priority support, no fast resolutions.</span>
                     </div>
                   </li>
@@ -156,7 +156,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
               </div>
             </div>
 
-            {/* G2 Agency Accounts Card */}
+            {/* Fuji Agency Accounts Card */}
             <div className="relative rounded-2xl bg-gradient-to-b from-orange-50/40 via-white to-white dark:from-slate-900 dark:via-slate-900/95 dark:to-[#111b3e] border-2 border-[#ff7a00] p-6 sm:p-8 flex flex-col justify-between shadow-xl dark:shadow-2xl dark:shadow-[#ff7a00]/15 transition-colors">
               {/* Highlight ribbon */}
               <div className="absolute -top-3.5 right-6 bg-gradient-to-r from-[#ff7a00] to-amber-500 text-white font-extrabold text-[11px] px-3.5 py-1 rounded-full uppercase tracking-wider shadow-lg">
@@ -170,7 +170,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                   </div>
                   <div>
                     <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                      G2 Agency Ad Accounts
+                      Fuji Agency Ad Accounts
                     </h3>
                     <span className="text-xs text-[#ff7a00] font-bold">
                       The Smart Choice for Serious Advertisers
@@ -179,7 +179,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                 </div>
 
                 <p className="text-sm text-slate-800 dark:text-slate-200 mb-6 leading-relaxed bg-[#ff7a00]/10 p-4 rounded-xl border border-[#ff7a00]/30 font-medium">
-                  If you’re ready to scale without limits, G2 Agency Ad Accounts are built to give you full control, stability, and performance—everything regular ad accounts simply can’t offer. Here’s what sets G2 Agency Ad Accounts apart:
+                  If you’re ready to scale without limits, Fuji Agency Ad Accounts are built to give you full control, stability, and performance—everything regular ad accounts simply can’t offer. Here’s what sets Fuji Agency Ad Accounts apart:
                 </p>
 
                 <ul className="space-y-4">
@@ -200,7 +200,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                   <li className="flex items-start gap-3">
                     <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold mt-0.5 flex-shrink-0">✓</span>
                     <div>
-                      <strong className="text-sm text-slate-900 dark:text-white block">Direct Support from G2 Agency</strong>
+                      <strong className="text-sm text-slate-900 dark:text-white block">Direct Support from Fuji Agency</strong>
                       <span className="text-xs text-slate-600 dark:text-slate-300">Get fast, hands-on assistance from experts who understand both technical and strategic challenges.</span>
                     </div>
                   </li>
@@ -236,7 +236,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                     <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold mt-0.5 flex-shrink-0">✓</span>
                     <div>
                       <strong className="text-sm text-slate-900 dark:text-white block">Exclusive Refund & Cashback Policies</strong>
-                      <span className="text-xs text-slate-600 dark:text-slate-300">Recover costs and maximize ROI with G2 Agency–only benefits. 100% refund of unspent cash.</span>
+                      <span className="text-xs text-slate-600 dark:text-slate-300">Recover costs and maximize ROI with Fuji Agency–only benefits. 100% refund of unspent cash.</span>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
@@ -258,10 +258,10 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                 {/* Final Quote Callout */}
                 <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-[#ff7a00]/15 dark:from-[#ff7a00]/20 dark:to-amber-500/10 border border-[#ff7a00]/30 dark:border-[#ff7a00]/40">
                   <span className="font-extrabold text-sm text-slate-900 dark:text-white block mb-1">
-                    Why Choose G2 Agency Ad Accounts?
+                    Why Choose Fuji Agency Ad Accounts?
                   </span>
                   <p className="text-xs text-slate-700 dark:text-slate-200">
-                    Because scaling ads shouldn’t come with uncertainty. With G2, you get power, protection, and priority—all in one place.
+                    Because scaling ads shouldn’t come with uncertainty. With Fuji, you get power, protection, and priority—all in one place.
                   </p>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                   onClick={onOpenOrder}
                   className="w-full py-3.5 bg-gradient-to-r from-[#ff7a00] to-[#e65c00] hover:from-[#ff8800] hover:to-[#ff6a00] text-white font-extrabold rounded-xl shadow-lg shadow-[#ff7a00]/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 text-sm"
                 >
-                  <span>Upgrade to G2 Agency Account</span>
+                  <span>Upgrade to Fuji Agency Account</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -285,7 +285,7 @@ export const Comparison: React.FC<ComparisonProps> = ({ onOpenOrder, lang }) => 
                 <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/80">
                   <th className="py-4 px-6 font-bold text-slate-700 dark:text-slate-300 w-1/4">Feature / Metric</th>
                   <th className="py-4 px-6 font-bold text-rose-600 dark:text-rose-400 w-3/8">Regular Ad Accounts</th>
-                  <th className="py-4 px-6 font-bold text-[#ff7a00] w-3/8">G2 Agency Ad Accounts</th>
+                  <th className="py-4 px-6 font-bold text-[#ff7a00] w-3/8">Fuji Agency Ad Accounts</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
