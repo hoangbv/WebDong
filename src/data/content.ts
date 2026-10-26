@@ -10,8 +10,8 @@ export const CONTACT_INFO = {
   whatsapp: 'http://Wa.me/0399064192',
   whatsappNumber: '+84 399 064 192',
   instagram: 'https://instagram.com',
-  email: 'support@g2-agency.com',
-  website: 'https://g2-agency.com',
+  email: 'support@fuji-agency.com',
+  website: 'https://fujiagency.com',
 };
 
 export const COMPARISON_DATA: ComparisonPoint[] = [
