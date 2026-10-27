@@ -22,17 +22,24 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
     region: 'Asia',
   },
   {
-    code: 'vi',
-    name: 'Vietnamese',
-    nativeName: 'Tiếng Việt',
-    flag: '🇻🇳',
-    region: 'Asia',
+    code: 'fr',
+    name: 'French',
+    nativeName: 'Français',
+    flag: '🇫🇷',
+    region: 'Europe',
   },
   {
-    code: 'it',
-    name: 'Italian',
-    nativeName: 'Italiano',
-    flag: '🇮🇹',
+    code: 'nl',
+    name: 'Dutch',
+    nativeName: 'Nederlands',
+    flag: '🇳🇱',
+    region: 'Europe',
+  },
+  {
+    code: 'pl',
+    name: 'Polish',
+    nativeName: 'Polski',
+    flag: '🇵🇱',
     region: 'Europe',
   },
   {
@@ -50,6 +57,13 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
     region: 'Europe',
   },
   {
+    code: 'it',
+    name: 'Italian',
+    nativeName: 'Italiano',
+    flag: '🇮🇹',
+    region: 'Europe',
+  },
+  {
     code: 'pt',
     name: 'Portuguese',
     nativeName: 'Português',
@@ -64,17 +78,17 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
     region: 'Europe',
   },
   {
-    code: 'th',
-    name: 'Thai',
-    nativeName: 'ไทย',
-    flag: '🇹🇭',
-    region: 'Asia',
-  },
-  {
     code: 'zh-CN',
     name: 'Chinese (Simplified)',
     nativeName: '简体中文',
     flag: '🇨🇳',
+    region: 'Asia',
+  },
+  {
+    code: 'th',
+    name: 'Thai',
+    nativeName: 'ไทย',
+    flag: '🇹🇭',
     region: 'Asia',
   },
   {
@@ -128,7 +142,7 @@ export function changeLanguageWithGoogleTranslate(targetCode: string): void {
 export function getCurrentLanguageCode(): string {
   try {
     const saved = localStorage.getItem('fuji_language');
-    if (saved) return saved;
+    if (saved && saved !== 'vi' && SUPPORTED_LANGUAGES.some((l) => l.code === saved)) return saved;
 
     // Check googtrans cookie
     const cookies = document.cookie.split(';');
@@ -138,7 +152,10 @@ export function getCurrentLanguageCode(): string {
         const val = trimmed.substring('googtrans='.length);
         const parts = val.split('/');
         if (parts.length >= 3 && parts[2]) {
-          return parts[2];
+          const code = parts[2];
+          if (code !== 'vi' && SUPPORTED_LANGUAGES.some((l) => l.code === code)) {
+            return code;
+          }
         }
       }
     }

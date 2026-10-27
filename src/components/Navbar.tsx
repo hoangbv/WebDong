@@ -18,7 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setLang,
 }) => {
   const { content } = useContent();
-  const { contactInfo, announcement, brandName, brandShort } = content;
+  const { contactInfo, announcement, brandName } = content;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileLangOpen, setMobileLangOpen] = useState(false);
@@ -63,8 +63,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleSelectLanguage = (item: LanguageOption) => {
     setCurrentLangCode(item.code);
     setLangDropdownOpen(false);
-    if (item.code === 'vi' || item.code === 'en') {
-      setLang(item.code as Language);
+    if (item.code === 'en') {
+      setLang('en');
     }
     changeLanguageWithGoogleTranslate(item.code);
   };
@@ -103,20 +103,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo */}
-        <a href="#overview" className="flex items-center gap-3 group notranslate">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff7a00] to-[#e65c00] flex items-center justify-center shadow-lg shadow-[#ff7a00]/30 group-hover:scale-105 transition-transform flex-shrink-0">
-            <span className="font-extrabold text-white text-base sm:text-lg tracking-tighter">{brandShort}</span>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tight text-slate-900 flex items-center gap-1 transition-colors uppercase">
-              {brandName}
-            </span>
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-              Facebook Ads & Fanpages
-            </span>
-          </div>
+        {/* Brand Logo Banner */}
+        <a href="#overview" className="flex items-center group notranslate">
+          <img
+            src="/assets/aistudio/banner_b181a63b.png"
+            alt={brandName || "Fuji Agency"}
+            className="h-7 sm:h-8 md:h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+          />
         </a>
 
         {/* Desktop Nav Links */}
@@ -154,7 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="flex items-center gap-2">
                     <Globe className="w-3.5 h-3.5 text-[#ff7a00]" />
                     <span className="text-slate-800 uppercase tracking-wider font-extrabold">
-                      Chọn Ngôn Ngữ / Select Language
+                      Language
                     </span>
                   </div>
                   <span className="text-[10px] text-[#ff7a00] font-semibold bg-[#ff7a00]/10 px-2 py-0.5 rounded-full">
