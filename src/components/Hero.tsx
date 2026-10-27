@@ -11,7 +11,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
   const { content } = useContent();
   const { brandName, contactInfo } = content;
   return (
-    <section id="overview" className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden transition-colors duration-300">
+    <section id="overview" className="relative pt-[70px] sm:pt-20 lg:pt-28 pb-16 lg:pb-24 overflow-hidden transition-colors duration-300">
       {/* Background radial glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff7a00]/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
