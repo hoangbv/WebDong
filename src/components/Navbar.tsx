@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Menu, X, ArrowUpRight, Sun, Moon, Globe, ChevronDown, Check, Sparkles } from 'lucide-react';
+import { MessageCircle, Menu, X, ArrowUpRight, Globe, ChevronDown, Check } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
-import { Theme, Language } from '../types';
+import { Language } from '../types';
 import { SUPPORTED_LANGUAGES, changeLanguageWithGoogleTranslate, getCurrentLanguageCode, LanguageOption } from '../utils/googleTranslate';
 
 interface NavbarProps {
   onOpenOrder: (initialService?: string) => void;
   lang: Language;
   setLang: (lang: Language) => void;
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme?: string;
+  setTheme?: (theme: any) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenOrder,
   lang,
   setLang,
-  theme,
-  setTheme,
 }) => {
   const { content } = useContent();
   const { contactInfo, announcement, brandName, brandShort } = content;
@@ -61,10 +59,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { href: '#faq', label: 'FAQ' },
   ];
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
   const handleSelectLanguage = (item: LanguageOption) => {
     setCurrentLangCode(item.code);
     setLangDropdownOpen(false);
@@ -80,12 +74,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 dark:bg-[#0B0F19]/90 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800/80 shadow-md dark:shadow-2xl py-3'
-          : 'bg-transparent py-5'
+          ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm py-3'
+          : 'bg-white/90 backdrop-blur-sm border-b border-slate-100 py-3 sm:py-4'
       }`}
     >
       {/* Top micro banner */}
-      <div className="hidden lg:block bg-slate-100/90 dark:bg-gradient-to-r dark:from-[#ff7a00]/10 dark:via-[#111b3e] dark:to-[#ff7a00]/10 border-b border-slate-200 dark:border-slate-800/50 py-1 text-xs text-slate-700 dark:text-slate-300 transition-colors notranslate">
+      <div className="hidden lg:block bg-slate-50 border-b border-slate-200/80 py-1 text-xs text-slate-700 transition-colors notranslate">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -98,9 +92,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               href={contactInfo.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-emerald-500 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors font-medium"
+              className="hover:text-emerald-600 flex items-center gap-1 transition-colors font-medium"
             >
-              <MessageCircle className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
+              <MessageCircle className="w-3 h-3 text-emerald-500" />
               <span>WhatsApp: {contactInfo.whatsappNumber}</span>
             </a>
           </div>
@@ -112,13 +106,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         <a href="#overview" className="flex items-center gap-3 group notranslate">
           <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff7a00] to-[#e65c00] flex items-center justify-center shadow-lg shadow-[#ff7a00]/30 group-hover:scale-105 transition-transform flex-shrink-0">
             <span className="font-extrabold text-white text-base sm:text-lg tracking-tighter">{brandShort}</span>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white dark:border-[#0B0F19]" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-1 transition-colors uppercase">
+            <span className="font-black text-xl tracking-tight text-slate-900 flex items-center gap-1 transition-colors uppercase">
               {brandName}
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
               Facebook Ads & Fanpages
             </span>
           </div>
@@ -130,34 +124,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-semibold text-slate-600 hover:text-[#ff7a00] dark:text-slate-300 dark:hover:text-[#ff7a00] transition-colors py-1"
+              className="text-sm font-semibold text-slate-600 hover:text-[#ff7a00] transition-colors py-1"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        {/* Action Buttons, Google Translate Menu & Theme Toggle */}
+        {/* Action Buttons & Google Translate Menu (Theme Toggle removed) */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700 transition-all hover:scale-105 shadow-sm"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-400 animate-spin" style={{ animationDuration: '12s' }} />
-            ) : (
-              <Moon className="w-4 h-4 text-slate-700" />
-            )}
-          </button>
-
           {/* Google Translate Language Dropdown Menu */}
           <div className="relative notranslate" ref={langDropdownRef}>
             <button
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
               aria-label="Select translation language"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-bold transition-all shadow-sm"
             >
               <Globe className="w-3.5 h-3.5 text-[#ff7a00]" />
               <span className="text-sm">{selectedLanguage.flag}</span>
@@ -165,87 +146,41 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - Expanded PC Grid (No scrollbar) */}
             {langDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#0e1424] border border-slate-200 dark:border-slate-700 shadow-2xl py-2 z-50 animate-fadeIn">
-                <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                  <span>Google Translate API</span>
-                  <span className="text-[10px] text-[#ff7a00] font-semibold">Auto-Translate</span>
+              <div className="absolute right-0 mt-2 w-[540px] lg:w-[620px] rounded-2xl bg-white border border-slate-200 shadow-2xl p-3.5 z-50 animate-fadeIn">
+                <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 text-[11px] font-bold text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-3.5 h-3.5 text-[#ff7a00]" />
+                    <span className="text-slate-800 uppercase tracking-wider font-extrabold">
+                      Chọn Ngôn Ngữ / Select Language
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[#ff7a00] font-semibold bg-[#ff7a00]/10 px-2 py-0.5 rounded-full">
+                    Google Translate API
+                  </span>
                 </div>
 
-                <div className="max-h-80 overflow-y-auto py-1">
-                  {/* Primary Language */}
-                  <div className="px-3 pt-1.5 pb-1 text-[10px] font-extrabold uppercase text-[#ff7a00] tracking-wider">
-                    Primary / Gốc
-                  </div>
-                  {SUPPORTED_LANGUAGES.filter((l) => l.code === 'en').map((item) => (
+                {/* Full Country Grid - All 12 Languages visible simultaneously */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {SUPPORTED_LANGUAGES.map((item) => (
                     <button
                       key={item.code}
                       onClick={() => handleSelectLanguage(item)}
-                      className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
+                      className={`text-left p-2.5 rounded-xl text-xs flex items-center justify-between border transition-all hover:scale-[1.02] ${
                         currentLangCode === item.code
-                          ? 'bg-[#ff7a00]/10 text-[#ff7a00] font-bold'
-                          : 'text-slate-700 dark:text-slate-200'
+                          ? 'bg-[#ff7a00]/10 border-[#ff7a00] text-[#ff7a00] font-bold shadow-sm'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-base">{item.flag}</span>
-                        <div>
-                          <div className="font-semibold">{item.name}</div>
-                          <div className="text-[10px] text-slate-400">{item.nativeName}</div>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-xl shrink-0">{item.flag}</span>
+                        <div className="min-w-0">
+                          <div className="font-bold text-xs truncate leading-tight">{item.nativeName}</div>
+                          <div className="text-[10px] text-slate-400 truncate leading-tight">{item.name}</div>
                         </div>
                       </div>
-                      {currentLangCode === item.code && <Check className="w-4 h-4 text-[#ff7a00]" />}
-                    </button>
-                  ))}
-
-                  {/* European Languages */}
-                  <div className="px-3 pt-2.5 pb-1 text-[10px] font-extrabold uppercase text-slate-400 dark:text-slate-500 tracking-wider border-t border-slate-100 dark:border-slate-800/80 mt-1">
-                    Europe / Châu Âu
-                  </div>
-                  {SUPPORTED_LANGUAGES.filter((l) => l.region === 'Europe').map((item) => (
-                    <button
-                      key={item.code}
-                      onClick={() => handleSelectLanguage(item)}
-                      className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
-                        currentLangCode === item.code
-                          ? 'bg-[#ff7a00]/10 text-[#ff7a00] font-bold'
-                          : 'text-slate-700 dark:text-slate-200'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-base">{item.flag}</span>
-                        <div>
-                          <div className="font-semibold">{item.name}</div>
-                          <div className="text-[10px] text-slate-400">{item.nativeName}</div>
-                        </div>
-                      </div>
-                      {currentLangCode === item.code && <Check className="w-4 h-4 text-[#ff7a00]" />}
-                    </button>
-                  ))}
-
-                  {/* Asian & Auto-Translate Languages */}
-                  <div className="px-3 pt-2.5 pb-1 text-[10px] font-extrabold uppercase text-slate-400 dark:text-slate-500 tracking-wider border-t border-slate-100 dark:border-slate-800/80 mt-1">
-                    Asia & Auto-Translate
-                  </div>
-                  {SUPPORTED_LANGUAGES.filter((l) => l.region === 'Asia' || l.region === 'Auto Translate').map((item) => (
-                    <button
-                      key={item.code}
-                      onClick={() => handleSelectLanguage(item)}
-                      className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
-                        currentLangCode === item.code
-                          ? 'bg-[#ff7a00]/10 text-[#ff7a00] font-bold'
-                          : 'text-slate-700 dark:text-slate-200'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-base">{item.flag}</span>
-                        <div>
-                          <div className="font-semibold">{item.name}</div>
-                          <div className="text-[10px] text-slate-400">{item.nativeName}</div>
-                        </div>
-                      </div>
-                      {currentLangCode === item.code && <Check className="w-4 h-4 text-[#ff7a00]" />}
+                      {currentLangCode === item.code && <Check className="w-3.5 h-3.5 text-[#ff7a00] shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -265,20 +200,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile controls */}
         <div className="flex items-center gap-2 xl:hidden">
-          {/* Mobile Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-
           {/* Mobile Language Trigger */}
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Language selection"
-            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1 text-xs font-bold notranslate"
+            className="p-2 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1 text-xs font-bold notranslate"
           >
             <span>{selectedLanguage.flag}</span>
             <span>{selectedLanguage.code.toUpperCase()}</span>
@@ -295,10 +221,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-white/98 dark:bg-[#0B0F19]/98 border-b border-slate-200 dark:border-slate-800 px-4 pt-4 pb-6 space-y-4 shadow-xl">
+        <div className="xl:hidden bg-white/98 border-b border-slate-200 px-4 pt-4 pb-6 space-y-4 shadow-xl">
           {/* Mobile Google Translate Language Selector Grid */}
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 notranslate">
-            <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 flex items-center justify-between">
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 notranslate">
+            <div className="text-xs font-bold text-slate-500 mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Globe className="w-3.5 h-3.5 text-[#ff7a00]" />
                 Language (Google Translate API)
@@ -315,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className={`flex items-center gap-2 p-2 rounded-xl text-xs font-medium text-left border transition-all ${
                     currentLangCode === item.code
                       ? 'bg-[#ff7a00] text-white border-[#ff7a00] shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   <span className="text-base">{item.flag}</span>
@@ -327,13 +253,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
+          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-slate-200">
             {navLinks.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#ff7a00] py-2 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                className="text-sm font-semibold text-slate-700 hover:text-[#ff7a00] py-2 px-2 rounded hover:bg-slate-100"
               >
                 {item.label}
               </a>
@@ -354,7 +280,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               href={contactInfo.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-emerald-500/15 text-emerald-600 border border-emerald-500/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               WhatsApp Support ({contactInfo.whatsappNumber})

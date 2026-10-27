@@ -62,8 +62,9 @@ const DEFAULT_CONTENT_STATE: AppContentState = {
   otherPricing: [...OTHER_PRICING],
 };
 
-const STORAGE_KEY = 'fuji_app_content_v5';
-const ADMIN_PASS_KEY = 'fuji_admin_passcode';
+const STORAGE_KEY = 'fuji_app_content_v6';
+const ADMIN_PASS_KEY = 'fuji_admin_passcode_v3';
+export const DEFAULT_ADMIN_PASSWORD = 'webdong@2026';
 
 interface ContentContextValue {
   content: AppContentState;
@@ -75,6 +76,9 @@ interface ContentContextValue {
   setAdminPassword: (newPass: string) => void;
   exportAsJsonString: () => string;
   importFromJsonString: (jsonStr: string) => boolean;
+  isServerSynced: boolean;
+  syncWithServer: () => Promise<boolean>;
+  generateContentTsCode: () => string;
 }
 
 const ContentContext = createContext<ContentContextValue | null>(null);
@@ -110,21 +114,65 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isServerSynced, setIsServerSynced] = useState(false);
+
   const [adminPassword, setAdminPasswordState] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       try {
-        return localStorage.getItem(ADMIN_PASS_KEY) || '123456';
+        return localStorage.getItem(ADMIN_PASS_KEY) || DEFAULT_ADMIN_PASSWORD;
       } catch {
-        return '123456';
+        return DEFAULT_ADMIN_PASSWORD;
       }
     }
-    return '123456';
+    return DEFAULT_ADMIN_PASSWORD;
   });
 
-  // Save content to localStorage whenever it changes
+  // Fetch shared state from server on startup to sync across all browsers and devices
+  const syncWithServer = async (): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/content');
+      if (res.ok) {
+        const serverData = await res.json();
+        if (serverData && !serverData.empty && typeof serverData === 'object') {
+          setContent((prev) => {
+            const merged: AppContentState = {
+              ...prev,
+              ...serverData,
+              contactInfo: {
+                ...prev.contactInfo,
+                ...(serverData.contactInfo || {}),
+              },
+              pricingTiers: serverData.pricingTiers || prev.pricingTiers,
+              faqItems: serverData.faqItems || prev.faqItems,
+              thresholdProgram: serverData.thresholdProgram || prev.thresholdProgram,
+              fanpageSolutions: serverData.fanpageSolutions || prev.fanpageSolutions,
+              otherPricing: serverData.otherPricing || prev.otherPricing,
+              servicesTitle: serverData.servicesTitle || prev.servicesTitle,
+              servicesSubtitle: serverData.servicesSubtitle || prev.servicesSubtitle,
+            };
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+          setIsServerSynced(true);
+          return true;
+        }
+      }
+    } catch {
+      // In static deployment, silently fall back to localStorage/defaults
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    syncWithServer();
+  }, []);
+
+  // Save content to localStorage and sync to server API
   const updateContent = (newContent: Partial<AppContentState>) => {
     setContent((prev) => {
-      const updated = {
+      const updated: AppContentState = {
         ...prev,
         ...newContent,
         contactInfo: {
@@ -132,11 +180,26 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           ...(newContent.contactInfo || {}),
         },
       };
+
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       } catch (e) {
         console.error('Could not save content to localStorage', e);
       }
+
+      // Sync to shared backend server
+      fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      })
+        .then((res) => {
+          if (res.ok) setIsServerSynced(true);
+        })
+        .catch(() => {
+          // Ignore network errors in static mode
+        });
+
       return updated;
     });
   };
@@ -148,6 +211,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     } catch {
       // ignore
     }
+    fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(DEFAULT_CONTENT_STATE),
+    }).catch(() => {});
   };
 
   const setAdminPassword = (newPass: string) => {
@@ -174,6 +242,24 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.error('Invalid JSON import', err);
     }
     return false;
+  };
+
+  // Generates clean TypeScript code ready to overwrite src/data/content.ts for Cloudflare Workers deployment
+  const generateContentTsCode = () => {
+    return `import { ComparisonPoint, FAQItem, PricingTier } from '../types';
+
+export const CONTACT_INFO = ${JSON.stringify(content.contactInfo, null, 2)};
+
+export const FB_PRICING_TIERS: PricingTier[] = ${JSON.stringify(content.pricingTiers, null, 2)};
+
+export const THRESHOLD_PROGRAM = ${JSON.stringify(content.thresholdProgram, null, 2)};
+
+export const FANPAGE_SOLUTIONS = ${JSON.stringify(content.fanpageSolutions, null, 2)};
+
+export const OTHER_PRICING = ${JSON.stringify(content.otherPricing, null, 2)};
+
+export const FAQ_DATA: FAQItem[] = ${JSON.stringify(content.faqItems, null, 2)};
+`;
   };
 
   // Keyboard shortcut Ctrl+Shift+A (or Cmd+Shift+A) & URL check ?admin=1
@@ -208,6 +294,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setAdminPassword,
         exportAsJsonString,
         importFromJsonString,
+        isServerSynced,
+        syncWithServer,
+        generateContentTsCode,
       }}
     >
       {children}

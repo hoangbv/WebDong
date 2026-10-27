@@ -19,36 +19,23 @@ import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
 import { OrderModal } from './components/OrderModal';
 import { AdminModal } from './components/AdminModal';
-import { Theme, Language } from './types';
+import { Language } from './types';
 
 function MainApp() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | undefined>(undefined);
   const [lang, setLang] = useState<Language>('en');
 
-  // Initialize theme from localStorage or default to 'dark'
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('fuji_theme') as Theme;
-      if (saved === 'light' || saved === 'dark') return saved;
-    }
-    return 'dark';
-  });
-
-  // Sync theme with HTML root class
+  // Enforce default white theme (light mode)
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.classList.remove('dark');
     try {
-      localStorage.setItem('fuji_theme', theme);
+      localStorage.setItem('fuji_theme', 'light');
     } catch {
       // ignore
     }
-  }, [theme]);
+  }, []);
 
   const handleOpenOrder = (service?: string) => {
     setSelectedService(service);
@@ -60,14 +47,12 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#ff7a00] selection:text-white transition-colors duration-300">
-      {/* Navigation with Theme & Language controls */}
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#ff7a00] selection:text-white transition-colors duration-300">
+      {/* Navigation */}
       <Navbar
         onOpenOrder={handleOpenOrder}
         lang={lang}
         setLang={setLang}
-        theme={theme}
-        setTheme={setTheme}
       />
 
       {/* Main Single Page Content */}

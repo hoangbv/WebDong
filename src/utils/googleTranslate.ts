@@ -15,11 +15,18 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
     region: 'Primary',
   },
   {
-    code: 'fr',
-    name: 'French',
-    nativeName: 'Français',
-    flag: '🇫🇷',
-    region: 'Europe',
+    code: 'ja',
+    name: 'Japanese',
+    nativeName: '日本語',
+    flag: '🇯🇵',
+    region: 'Asia',
+  },
+  {
+    code: 'vi',
+    name: 'Vietnamese',
+    nativeName: 'Tiếng Việt',
+    flag: '🇻🇳',
+    region: 'Asia',
   },
   {
     code: 'it',
@@ -76,13 +83,6 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
     nativeName: 'Bahasa Melayu',
     flag: '🇲🇾',
     region: 'Asia',
-  },
-  {
-    code: 'vi',
-    name: 'Vietnamese',
-    nativeName: 'Tiếng Việt',
-    flag: '🇻🇳',
-    region: 'Auto Translate',
   },
 ];
 

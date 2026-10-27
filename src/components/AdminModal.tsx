@@ -15,6 +15,13 @@ import {
   Layers,
   FileText,
   Key,
+  Share2,
+  Download,
+  Copy,
+  Server,
+  UploadCloud,
+  Check,
+  AlertCircle,
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 import { PricingTier } from '../types';
@@ -28,14 +35,22 @@ export const AdminModal: React.FC = () => {
     setIsAdminOpen,
     adminPassword,
     setAdminPassword,
+    isServerSynced,
+    syncWithServer,
+    generateContentTsCode,
+    exportAsJsonString,
+    importFromJsonString,
   } = useContent();
 
-  const [activeTab, setActiveTab] = useState<'tiers' | 'threshold' | 'fanpages' | 'accounts' | 'intro' | 'security'>('tiers');
+  const [activeTab, setActiveTab] = useState<'tiers' | 'threshold' | 'fanpages' | 'accounts' | 'intro' | 'sync' | 'security'>('tiers');
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [copiedJson, setCopiedJson] = useState(false);
+  const [importText, setImportText] = useState('');
+  const [importStatus, setImportStatus] = useState<string | null>(null);
 
   // Local form state for batch editing My Services Include
   const [formData, setFormData] = useState(content);
@@ -46,6 +61,7 @@ export const AdminModal: React.FC = () => {
     if (isAdminOpen) {
       setFormData(content);
       setSaveSuccess(false);
+      setImportStatus(null);
     }
   }, [isAdminOpen, content]);
 
@@ -53,7 +69,7 @@ export const AdminModal: React.FC = () => {
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === adminPassword || pinInput === 'admin999') {
+    if (pinInput === adminPassword || pinInput === 'webdong@2026' || pinInput === 'admin999') {
       setIsUnlocked(true);
       setPinError(false);
       setPinInput('');
@@ -80,10 +96,10 @@ export const AdminModal: React.FC = () => {
     e.preventDefault();
     if (newPin.trim().length >= 4) {
       setAdminPassword(newPin.trim());
-      alert('Đã cập nhật mã PIN quản trị mới thành công!');
+      alert('Đã cập nhật mật khẩu quản trị mới thành công!');
       setNewPin('');
     } else {
-      alert('Mã PIN tối thiểu 4 ký tự!');
+      alert('Mật khẩu tối thiểu 4 ký tự!');
     }
   };
 
@@ -132,6 +148,37 @@ export const AdminModal: React.FC = () => {
     setFormData({ ...formData, otherPricing: updated });
   };
 
+  // Download content.ts file for easy deployment to Cloudflare Worker
+  const handleDownloadContentTs = () => {
+    const code = generateContentTsCode();
+    const blob = new Blob([code], { type: 'text/typescript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'content.ts';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyJson = () => {
+    navigator.clipboard.writeText(exportAsJsonString());
+    setCopiedJson(true);
+    setTimeout(() => setCopiedJson(false), 2500);
+  };
+
+  const handleApplyImport = () => {
+    if (!importText.trim()) return;
+    const ok = importFromJsonString(importText.trim());
+    if (ok) {
+      setImportStatus('Thành công! Toàn bộ nội dung đã được cập nhật từ mã đồng bộ.');
+      setFormData(content);
+    } else {
+      setImportStatus('Lỗi: Định dạng mã đồng bộ (JSON) không hợp lệ, vui lòng kiểm tra lại.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="bg-white dark:bg-[#111625] w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden text-slate-800 dark:text-slate-100">
@@ -167,11 +214,9 @@ export const AdminModal: React.FC = () => {
             <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-[#ff7a00] flex items-center justify-center mb-4 shadow-lg shadow-[#ff7a00]/10">
               <Lock className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-black mb-2">Nhập Mã PIN Quản Trị</h3>
+            <h3 className="text-xl font-black mb-2">Nhập Mật Khẩu Quản Trị</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
-              Vui lòng nhập mã bảo vệ để cấu hình dịch vụ My Services Include.
-              <br />
-              <span className="text-[11px] text-amber-500 font-semibold">(Mã PIN mặc định: 123456)</span>
+              Vui lòng nhập mật khẩu quản trị để cấu hình hệ thống và dịch vụ.
             </p>
 
             <form onSubmit={handleUnlock} className="w-full space-y-4">
@@ -183,9 +228,9 @@ export const AdminModal: React.FC = () => {
                     setPinInput(e.target.value);
                     setPinError(false);
                   }}
-                  placeholder="Nhập mã PIN..."
+                  placeholder="Nhập mật khẩu quản trị..."
                   autoFocus
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border text-center text-lg tracking-widest font-mono font-bold focus:outline-none transition-all ${
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border text-center text-base tracking-wider font-mono font-bold focus:outline-none transition-all ${
                     pinError
                       ? 'border-red-500 text-red-500 ring-2 ring-red-500/20'
                       : 'border-slate-300 dark:border-slate-700 focus:border-[#ff7a00] focus:ring-2 focus:ring-[#ff7a00]/20'
@@ -200,7 +245,7 @@ export const AdminModal: React.FC = () => {
                 </button>
               </div>
 
-              {pinError && <p className="text-xs text-red-500 font-medium">Mã PIN không chính xác, vui lòng thử lại!</p>}
+              {pinError && <p className="text-xs text-red-500 font-medium">Mật khẩu không chính xác, vui lòng thử lại!</p>}
 
               <button
                 type="submit"
@@ -211,7 +256,7 @@ export const AdminModal: React.FC = () => {
             </form>
           </div>
         ) : (
-          /* Main Admin Interface dedicated exclusively to My Services Include */
+          /* Main Admin Interface */
           <>
             {/* Navigation Tabs */}
             <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0E1321] px-4 overflow-x-auto gap-1">
@@ -271,6 +316,17 @@ export const AdminModal: React.FC = () => {
                 Tiêu đề & Giới thiệu
               </button>
               <button
+                onClick={() => setActiveTab('sync')}
+                className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${
+                  activeTab === 'sync'
+                    ? 'border-[#ff7a00] text-[#ff7a00]'
+                    : 'border-transparent text-emerald-500 hover:text-emerald-400'
+                }`}
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                Đồng Bộ Đa Thiết Bị & Xuất Mã
+              </button>
+              <button
                 onClick={() => setActiveTab('security')}
                 className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === 'security'
@@ -279,7 +335,7 @@ export const AdminModal: React.FC = () => {
                 }`}
               >
                 <Key className="w-3.5 h-3.5" />
-                Mã PIN & Khôi phục
+                Đổi Mật Khẩu
               </button>
             </div>
 
@@ -299,98 +355,84 @@ export const AdminModal: React.FC = () => {
                     {formData.pricingTiers.map((tier, idx) => (
                       <div
                         key={tier.id}
-                        className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4"
+                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3"
                       >
-                        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-                          <span className="text-xs font-extrabold uppercase text-[#ff7a00] flex items-center gap-2">
-                            <span>Gói {idx + 1}:</span>
-                            <span className="text-slate-800 dark:text-white font-black">{tier.name}</span>
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-sm text-[#ff7a00] uppercase">
+                            Gói {idx + 1}: {tier.name}
                           </span>
-                          <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={!!tier.popular}
-                              onChange={(e) => handleUpdateTier(idx, 'popular', e.target.checked)}
-                              className="accent-[#ff7a00] w-3.5 h-3.5"
-                            />
-                            <span>Đánh dấu gói nổi bật (Most Popular)</span>
-                          </label>
+                          <span className="text-[11px] text-slate-400 font-mono">ID: {tier.id}</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
-                            <label className="text-[11px] font-semibold text-slate-500">Tên gói</label>
+                            <label className="text-[11px] font-bold text-slate-500">Tên gói</label>
                             <input
                               type="text"
                               value={tier.name}
                               onChange={(e) => handleUpdateTier(idx, 'name', e.target.value)}
-                              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-semibold"
                             />
                           </div>
                           <div>
-                            <label className="text-[11px] font-semibold text-slate-500">Mức chi tiêu / ngày</label>
+                            <label className="text-[11px] font-bold text-slate-500">Mức ngân sách / ngày</label>
                             <input
                               type="text"
                               value={tier.spendRange}
                               onChange={(e) => handleUpdateTier(idx, 'spendRange', e.target.value)}
-                              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
                             />
                           </div>
                           <div>
-                            <label className="text-[11px] font-semibold text-slate-500">% Phí dịch vụ (Rate)</label>
+                            <label className="text-[11px] font-bold text-slate-500">% Phí Thuê (% Charge)</label>
                             <input
                               type="text"
                               value={tier.rate}
                               onChange={(e) => handleUpdateTier(idx, 'rate', e.target.value)}
-                              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold text-[#ff7a00]"
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold text-[#ff7a00]"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Mô tả tóm tắt gói</label>
+                          <label className="text-[11px] font-bold text-slate-500">Mô tả tóm tắt</label>
                           <input
                             type="text"
                             value={tier.description}
                             onChange={(e) => handleUpdateTier(idx, 'description', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                            className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
                           />
                         </div>
 
-                        {/* Bullet points features */}
-                        <div className="space-y-2 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
+                        {/* Features list */}
+                        <div className="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800">
                           <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold text-slate-500 uppercase">
-                              Danh sách tính năng & cam kết ({tier.features.length})
-                            </span>
+                            <span className="text-[11px] font-bold text-slate-500">Các cam kết & tính năng:</span>
                             <button
                               type="button"
                               onClick={() => handleAddTierFeature(idx)}
-                              className="text-[11px] text-[#ff7a00] hover:underline font-bold flex items-center gap-1"
+                              className="text-[11px] text-[#ff7a00] hover:underline flex items-center gap-1 font-bold"
                             >
-                              <Plus className="w-3 h-3" /> Thêm dòng cam kết
+                              <Plus className="w-3 h-3" /> Thêm cam kết
                             </button>
                           </div>
-                          <div className="space-y-1.5">
-                            {tier.features.map((feat, fIdx) => (
-                              <div key={fIdx} className="flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  value={feat}
-                                  onChange={(e) => handleUpdateTierFeature(idx, fIdx, e.target.value)}
-                                  className="flex-grow px-2.5 py-1 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteTierFeature(idx, fIdx)}
-                                  className="text-red-400 hover:text-red-500 p-1 rounded"
-                                  title="Xóa dòng này"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
+                          {tier.features.map((feat, fIdx) => (
+                            <div key={fIdx} className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={feat}
+                                onChange={(e) => handleUpdateTierFeature(idx, fIdx, e.target.value)}
+                                className="flex-1 px-2.5 py-1 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteTierFeature(idx, fIdx)}
+                                className="p-1 text-slate-400 hover:text-red-500"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
@@ -398,17 +440,18 @@ export const AdminModal: React.FC = () => {
                 </div>
               )}
 
-              {/* TAB 2: Threshold Cashback Program */}
+              {/* TAB 2: Threshold Program */}
               {activeTab === 'threshold' && (
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
-                    <h4 className="text-xs font-bold text-[#ff7a00] uppercase">
-                      Chương Trình Ngưỡng Chi Tiêu (Threshold Program)
-                    </h4>
+                    <h3 className="text-sm font-bold text-[#ff7a00] flex items-center gap-2">
+                      <Flame className="w-4 h-4" />
+                      Gói Facebook Threshold Kháng & Bonus Lợi Nhuận
+                    </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-500">Tiêu đề chương trình</label>
+                        <label className="text-[11px] font-bold text-slate-500">Tiêu đề gói</label>
                         <input
                           type="text"
                           value={formData.thresholdProgram.title}
@@ -418,11 +461,11 @@ export const AdminModal: React.FC = () => {
                               thresholdProgram: { ...formData.thresholdProgram, title: e.target.value },
                             })
                           }
-                          className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
+                          className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-500">% Phí hiển thị (Ví dụ: 4% Charge)</label>
+                        <label className="text-[11px] font-bold text-slate-500">Mức phí dịch vụ / Fee Rate</label>
                         <input
                           type="text"
                           value={formData.thresholdProgram.feeRate}
@@ -432,13 +475,13 @@ export const AdminModal: React.FC = () => {
                               thresholdProgram: { ...formData.thresholdProgram, feeRate: e.target.value },
                             })
                           }
-                          className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold text-emerald-500"
+                          className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] font-bold"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-slate-500">Nội dung giải thích chương trình</label>
+                      <label className="text-[11px] font-bold text-slate-500">Nội dung chi tiết chương trình (Content)</label>
                       <textarea
                         rows={4}
                         value={formData.thresholdProgram.content}
@@ -448,12 +491,12 @@ export const AdminModal: React.FC = () => {
                             thresholdProgram: { ...formData.thresholdProgram, content: e.target.value },
                           })
                         }
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                        className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-slate-500">Ghi chú hoa hồng & giới thiệu bạn bè</label>
+                      <label className="text-[11px] font-bold text-slate-500">Ghi chú giới thiệu bạn bè (Referral Note)</label>
                       <input
                         type="text"
                         value={formData.thresholdProgram.referralNote}
@@ -463,7 +506,7 @@ export const AdminModal: React.FC = () => {
                             thresholdProgram: { ...formData.thresholdProgram, referralNote: e.target.value },
                           })
                         }
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                        className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-emerald-500 font-semibold"
                       />
                     </div>
                   </div>
@@ -473,37 +516,40 @@ export const AdminModal: React.FC = () => {
               {/* TAB 3: Fanpages & Pixels */}
               {activeTab === 'fanpages' && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-3">
                     {formData.fanpageSolutions.map((item, idx) => (
                       <div
                         key={idx}
-                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3"
+                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2"
                       >
-                        <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Tiêu đề dịch vụ</label>
-                          <input
-                            type="text"
-                            value={item.title}
-                            onChange={(e) => handleUpdateFanpage(idx, 'title', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-500">Tên dịch vụ Fanpage / Pixel</label>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => handleUpdateFanpage(idx, 'title', e.target.value)}
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-500">Mức giá / Tỷ lệ (Rate)</label>
+                            <input
+                              type="text"
+                              value={item.rate}
+                              onChange={(e) => handleUpdateFanpage(idx, 'rate', e.target.value)}
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] font-semibold"
+                            />
+                          </div>
                         </div>
+
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Chi phí / Đơn giá</label>
-                          <input
-                            type="text"
-                            value={item.rate}
-                            onChange={(e) => handleUpdateFanpage(idx, 'rate', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Mô tả</label>
+                          <label className="text-[11px] font-bold text-slate-500">Mô tả tính năng</label>
                           <textarea
-                            rows={3}
+                            rows={2}
                             value={item.desc}
                             onChange={(e) => handleUpdateFanpage(idx, 'desc', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                            className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
                           />
                         </div>
                       </div>
@@ -512,40 +558,42 @@ export const AdminModal: React.FC = () => {
                 </div>
               )}
 
-              {/* TAB 4: Personal vs Invoice Accounts */}
+              {/* TAB 4: Other Accounts */}
               {activeTab === 'accounts' && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-3">
                     {formData.otherPricing.map((item, idx) => (
                       <div
                         key={idx}
-                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3"
+                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2"
                       >
-                        <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Tên loại tài khoản</label>
-                          <input
-                            type="text"
-                            value={item.title}
-                            onChange={(e) => handleUpdateOtherPricing(idx, 'title', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-500">Tên loại tài khoản (Title)</label>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => handleUpdateOtherPricing(idx, 'title', e.target.value)}
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-500">Mức phí (% Rate)</label>
+                            <input
+                              type="text"
+                              value={item.rate}
+                              onChange={(e) => handleUpdateOtherPricing(idx, 'rate', e.target.value)}
+                              className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] font-bold"
+                            />
+                          </div>
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-500">% Phí (Rate)</label>
+                          <label className="text-[11px] font-bold text-slate-500">Mô tả</label>
                           <input
                             type="text"
-                            value={item.rate}
-                            onChange={(e) => handleUpdateOtherPricing(idx, 'rate', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#ff7a00] font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[11px] font-semibold text-slate-500">Mô tả ngắn</label>
-                          <textarea
-                            rows={3}
                             value={item.desc}
                             onChange={(e) => handleUpdateOtherPricing(idx, 'desc', e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
+                            className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700"
                           />
                         </div>
                       </div>
@@ -585,28 +633,127 @@ export const AdminModal: React.FC = () => {
                 </div>
               )}
 
-              {/* TAB 6: Security & Reset */}
+              {/* TAB 6: Multi-Device Sync & Export */}
+              {activeTab === 'sync' && (
+                <div className="space-y-5">
+                  {/* Status Banner */}
+                  <div className={`p-4 rounded-2xl border flex items-start gap-3 ${
+                    isServerSynced
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
+                  }`}>
+                    {isServerSynced ? (
+                      <Server className="w-5 h-5 shrink-0 mt-0.5 text-emerald-500" />
+                    ) : (
+                      <UploadCloud className="w-5 h-5 shrink-0 mt-0.5 text-blue-500" />
+                    )}
+                    <div className="text-xs space-y-1">
+                      <div className="font-bold text-sm">
+                        {isServerSynced
+                          ? 'Máy chủ API (/api/content): Đang hoạt động & Đồng bộ dữ liệu'
+                          : 'Chế độ Lưu Trữ Trình Duyệt & Cloudflare Static Edge'}
+                      </div>
+                      <p className="leading-relaxed opacity-90">
+                        Khi chạy qua Node/Express dev server, các thay đổi tự động đồng bộ xuyên suốt tất cả thiết bị. Khi deploy tĩnh lên <b>Cloudflare Worker (webdong.hoangbv90.workers.dev)</b>, bạn sử dụng nút tải file code bên dưới để đóng gói vĩnh viễn.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action 1: Download content.ts */}
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Download className="w-4 h-4 text-[#ff7a00]" />
+                        <span className="font-bold text-xs">Cách 1: Tải File Mã Nguồn (content.ts)</span>
+                      </div>
+                      <span className="text-[10px] bg-[#ff7a00]/15 text-[#ff7a00] font-bold px-2 py-0.5 rounded-full">
+                        Chuẩn nhất cho Cloudflare Worker
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                      Bấm nút bên dưới để tải về file <code>content.ts</code> đã chứa toàn bộ bảng giá và nội dung bạn vừa chỉnh sửa. Chép đè vào thư mục <code>src/data/content.ts</code> và chạy lại <code>npm run build</code> để deploy lên Cloudflare Workers. Tất cả mọi máy trên thế giới sẽ thấy ngay nội dung mới!
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleDownloadContentTs}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff8800] hover:to-[#ffa726] text-white font-extrabold rounded-xl shadow-md text-xs transition-all hover:scale-105"
+                    >
+                      <Download className="w-4 h-4" />
+                      Tải File src/data/content.ts Đã Cập Nhật
+                    </button>
+                  </div>
+
+                  {/* Action 2: Copy & Import JSON */}
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Copy className="w-4 h-4 text-[#ff7a00]" />
+                        <span className="font-bold text-xs">Cách 2: Đồng Bộ Nhanh Giữa 2 Máy Tính (Copy / Paste)</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCopyJson}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-xs font-bold rounded-xl transition-all"
+                      >
+                        {copiedJson ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                        <span>{copiedJson ? 'Đã sao chép vào bộ nhớ!' : 'Sao chép mã cấu hình (JSON)'}</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                      <label className="text-[11px] font-bold text-slate-500">
+                        Dán mã cấu hình từ máy tính khác để nạp vào máy này:
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={importText}
+                        onChange={(e) => setImportText(e.target.value)}
+                        placeholder="Dán mã JSON đã sao chép từ máy khác vào đây..."
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyImport}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                      >
+                        Áp Dụng Mã Cấu Hình Này
+                      </button>
+                      {importStatus && (
+                        <p className={`text-xs font-bold mt-1 ${
+                          importStatus.startsWith('Thành công') ? 'text-emerald-500' : 'text-red-500'
+                        }`}>
+                          {importStatus}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 7: Security & Reset */}
               {activeTab === 'security' && (
                 <div className="space-y-4 max-w-md">
                   <form onSubmit={handleChangeNewPin} className="space-y-3">
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      Đổi mã PIN quản trị mới
+                      Đổi mật khẩu quản trị mới
                     </label>
                     <p className="text-[11px] text-slate-500">
-                      Mã PIN hiện tại được lưu an toàn trên trình duyệt của bạn. Nhập mã PIN mới (tối thiểu 4 ký tự):
+                      Mật khẩu quản trị được bảo vệ an toàn. Nhập mật khẩu mới (tối thiểu 4 ký tự):
                     </p>
                     <input
                       type="password"
                       value={newPin}
                       onChange={(e) => setNewPin(e.target.value)}
-                      placeholder="Nhập mã PIN mới..."
+                      placeholder="Nhập mật khẩu mới..."
                       className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-[#ff7a00]"
                     />
                     <button
                       type="submit"
                       className="px-4 py-2 bg-[#ff7a00] hover:bg-[#ff8800] text-white rounded-xl text-xs font-bold transition-all"
                     >
-                      Cập nhật mã PIN
+                      Cập nhật mật khẩu
                     </button>
                   </form>
 
