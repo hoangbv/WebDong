@@ -258,7 +258,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-                  Chọn Ngôn Ngữ / Language
+                  Language
                 </h3>
                 <p className="text-[10px] text-slate-500">
                   Current: <span className="font-semibold text-[#ff7a00]">{selectedLanguage.name} ({selectedLanguage.code.toUpperCase()})</span>

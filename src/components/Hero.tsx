@@ -23,8 +23,19 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder, lang }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Headline and Brief */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            {/* Top pill badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ff7a00]/10 border border-[#ff7a00]/30 text-[#ff7a00] text-xs font-bold uppercase tracking-wider">
+            {/* Mobile & Tablet: Fuji Agency Brand Banner */}
+            <div className="flex lg:hidden justify-center">
+              <div className="relative inline-block w-full max-w-[340px] sm:max-w-[420px] rounded-2xl bg-white border border-slate-200/90 shadow-md hover:shadow-lg p-2.5 sm:p-3 transition-all duration-300 group">
+                <img
+                  src="/assets/aistudio/bannerfuji_786ffa13.png"
+                  alt="Fuji Agency Banner"
+                  className="w-full h-auto object-contain max-h-20 sm:max-h-24 mx-auto transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+              </div>
+            </div>
+
+            {/* Desktop (PC): Original Top Pill Badge */}
+            <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ff7a00]/10 border border-[#ff7a00]/30 text-[#ff7a00] text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Facebook Agency BM & Resilient Fanpage Services</span>
             </div>
