@@ -20,7 +20,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { content } = useContent();
   const { contactInfo, announcement, brandName, brandShort } = content;
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileLangOpen, setMobileLangOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [currentLangCode, setCurrentLangCode] = useState<string>('en');
 
@@ -202,88 +203,163 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2 xl:hidden">
           {/* Mobile Language Trigger */}
           <button
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={() => {
+              setMobileLangOpen(!mobileLangOpen);
+              setMobileNavOpen(false);
+            }}
             aria-label="Language selection"
-            className="p-2 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1 text-xs font-bold notranslate"
+            className={`px-2.5 py-2 rounded-xl border flex items-center gap-1.5 text-xs font-bold transition-all notranslate ${
+              mobileLangOpen
+                ? 'bg-[#ff7a00] text-white border-[#ff7a00] shadow-sm'
+                : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
+            }`}
           >
-            <span>{selectedLanguage.flag}</span>
+            <span className="text-sm">{selectedLanguage.flag}</span>
             <span>{selectedLanguage.code.toUpperCase()}</span>
+            <ChevronDown className={`w-3 h-3 transition-transform ${mobileLangOpen ? 'rotate-180' : ''}`} />
           </button>
 
+          {/* Mobile Navigation Hamburger Trigger */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            onClick={() => {
+              setMobileNavOpen(!mobileNavOpen);
+              setMobileLangOpen(false);
+            }}
+            aria-label="Toggle navigation menu"
+            className={`p-2 rounded-xl border transition-all ${
+              mobileNavOpen
+                ? 'bg-slate-900 text-white border-slate-900'
+                : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
+            }`}
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="xl:hidden bg-white/98 border-b border-slate-200 px-4 pt-4 pb-6 space-y-4 shadow-xl">
-          {/* Mobile Google Translate Language Selector Grid */}
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 notranslate">
-            <div className="text-xs font-bold text-slate-500 mb-2 flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-[#ff7a00]" />
-                Language (Google Translate API)
-              </span>
-              <span className="text-[10px] text-[#ff7a00] font-semibold">{selectedLanguage.name}</span>
+      {/* Backdrop for mobile overlays */}
+      {(mobileLangOpen || mobileNavOpen) && (
+        <div
+          className="xl:hidden fixed inset-0 top-[60px] sm:top-[68px] bg-slate-900/30 backdrop-blur-xs z-30"
+          onClick={() => {
+            setMobileLangOpen(false);
+            setMobileNavOpen(false);
+          }}
+        />
+      )}
+
+      {/* 1. Mobile Language Selector Menu (ONLY Language) */}
+      {mobileLangOpen && (
+        <div className="xl:hidden relative z-40 bg-white border-b border-slate-200 px-4 pt-3 pb-5 shadow-2xl animate-fadeIn notranslate">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#ff7a00]/10 flex items-center justify-center text-[#ff7a00]">
+                <Globe className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                  Chọn Ngôn Ngữ / Language
+                </h3>
+                <p className="text-[10px] text-slate-500">
+                  Current: <span className="font-semibold text-[#ff7a00]">{selectedLanguage.name} ({selectedLanguage.code.toUpperCase()})</span>
+                </p>
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto p-1">
-              {SUPPORTED_LANGUAGES.map((item) => (
+            <button
+              onClick={() => setMobileLangOpen(false)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              aria-label="Close language selector"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* All languages grid - Full display with flags & names */}
+          <div className="grid grid-cols-2 gap-2 max-h-[60vh] overflow-y-auto pr-1">
+            {SUPPORTED_LANGUAGES.map((item) => {
+              const isCurrent = currentLangCode === item.code;
+              return (
                 <button
                   key={item.code}
                   onClick={() => {
                     handleSelectLanguage(item);
+                    setMobileLangOpen(false);
                   }}
-                  className={`flex items-center gap-2 p-2 rounded-xl text-xs font-medium text-left border transition-all ${
-                    currentLangCode === item.code
-                      ? 'bg-[#ff7a00] text-white border-[#ff7a00] shadow-sm'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  className={`text-left p-2.5 rounded-xl text-xs flex items-center justify-between border transition-all ${
+                    isCurrent
+                      ? 'bg-[#ff7a00] text-white border-[#ff7a00] font-bold shadow-md'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
                   }`}
                 >
-                  <span className="text-base">{item.flag}</span>
-                  <div className="truncate">
-                    <div className="truncate font-semibold">{item.name}</div>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xl shrink-0">{item.flag}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-xs truncate leading-tight">{item.nativeName}</div>
+                      <div className={`text-[10px] truncate leading-tight ${isCurrent ? 'text-white/80' : 'text-slate-500'}`}>
+                        {item.name}
+                      </div>
+                    </div>
                   </div>
+                  {isCurrent && <Check className="w-4 h-4 text-white shrink-0" />}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 2. Mobile Navigation Menu (ONLY Navigation & Quick Actions) */}
+      {mobileNavOpen && (
+        <div className="xl:hidden relative z-40 bg-white border-b border-slate-200 px-4 pt-3 pb-6 shadow-2xl animate-fadeIn">
+          <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+              Menu / Navigation
+            </span>
+            <button
+              onClick={() => setMobileNavOpen(false)}
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              aria-label="Close navigation menu"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-slate-200">
+          {/* Navigation Links Grid */}
+          <div className="grid grid-cols-2 gap-2 pb-4">
             {navLinks.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold text-slate-700 hover:text-[#ff7a00] py-2 px-2 rounded hover:bg-slate-100"
+                onClick={() => setMobileNavOpen(false)}
+                className="text-xs font-bold text-slate-700 hover:text-[#ff7a00] py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-orange-50 border border-slate-100 hover:border-[#ff7a00]/30 transition-all flex items-center justify-between"
               >
-                {item.label}
+                <span>{item.label}</span>
+                <ArrowUpRight className="w-3 h-3 text-slate-400" />
               </a>
             ))}
           </div>
 
-          <div className="flex flex-col gap-2 pt-2 notranslate">
+          {/* Actions: Rent Account & WhatsApp */}
+          <div className="flex flex-col gap-2 pt-3 border-t border-slate-100 notranslate">
             <button
               onClick={() => {
-                setMobileMenuOpen(false);
+                setMobileNavOpen(false);
                 onOpenOrder();
               }}
-              className="w-full py-3 bg-[#ff7a00] text-white font-bold rounded-xl text-center shadow-lg shadow-[#ff7a00]/30"
+              className="w-full py-3 bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff8800] hover:to-[#ffa726] text-white font-extrabold text-sm rounded-xl text-center shadow-lg shadow-[#ff7a00]/30 flex items-center justify-center gap-2 transition-all"
             >
-              Rent Account Now
+              <span>Rent Account Now</span>
+              <ArrowUpRight className="w-4 h-4" />
             </button>
             <a
               href={contactInfo.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2.5 bg-emerald-500/15 text-emerald-600 border border-emerald-500/40 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
+              onClick={() => setMobileNavOpen(false)}
+              className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 border border-emerald-500/30 text-center font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
-              WhatsApp Support ({contactInfo.whatsappNumber})
+              <MessageCircle className="w-4 h-4 text-emerald-500" />
+              <span>WhatsApp Support ({contactInfo.whatsappNumber})</span>
             </a>
           </div>
         </div>
